@@ -8,7 +8,7 @@ filetype plugin indent on
 :se background=dark
 colorscheme solarized
 :se tabstop=4
-:se softtabstop=4 
+:se softtabstop=4
 :se shiftwidth=4
 :se expandtab
 :se hlsearch
@@ -24,6 +24,11 @@ colorscheme solarized
 ":highlight ColorColumn ctermbg=6
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
+let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+if executable('ag')
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
+let g:ctrlp_working_path_mode = 'c'
 
 " Wheel scrolling
 :set mouse=a
