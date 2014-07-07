@@ -16,6 +16,9 @@ colorscheme solarized
 :syntax on
 :set ttyfast
 
+" Fix vim colors
+:set t_Co=256
+
 " Stop Nerdtree from opening as soon as vim starts
 let g:NERDTreeHijackNetrw=0
 
