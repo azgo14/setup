@@ -16,12 +16,15 @@ colorscheme solarized
 :syntax on
 :set ttyfast
 
+" Stop Nerdtree from opening as soon as vim starts
+let g:NERDTreeHijackNetrw=0
+
+" Color column after 80 differently
+let &colorcolumn=join(range(81,999),",")
 
 " Add full file path in statusline
 :se statusline+=%F
 :se ls=2
-":set colorcolumn=80
-":highlight ColorColumn ctermbg=6
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
