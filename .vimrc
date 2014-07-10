@@ -7,14 +7,20 @@ filetype plugin indent on
 :se lcs=tab:?\ ,trail:·,eol:¬,nbsp:_
 :se background=dark
 colorscheme solarized
-:se tabstop=4
-:se softtabstop=4
-:se shiftwidth=4
+:se tabstop=2
+:se softtabstop=2
+:se shiftwidth=2
 :se expandtab
 :se hlsearch
 :se number
 :syntax on
-:set ttyfast
+
+" Search results not at bottom
+:set scrolloff=10
+
+" Make vim draw faster
+:se lazyredraw
+:se ttyfast
 
 " Fix vim colors
 :set t_Co=256
