@@ -1,29 +1,46 @@
-execute pathogen#infect()
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" Vim Plugins
+Bundle 'gmarik/vundle'
+Bundle 'altercation/vim-colors-solarized.git'
+Bundle 'kien/ctrlp.vim.git'
+Bundle 'scrooloose/nerdtree.git'
+Bundle 'Shougo/neocomplete.vim.git'
+Bundle 'Rip-Rip/clang_complete.git'
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 syntax enable
 filetype plugin indent on
 " Use UTF-8 without BOM
-:se encoding=utf-8 nobomb
+set encoding=utf-8 nobomb
 " Show “invisible” characters
-:se lcs=tab:?\ ,trail:·,eol:¬,nbsp:_
-:se background=dark
+set lcs=tab:?\ ,trail:·,eol:¬,nbsp:_
+set background=dark
 colorscheme solarized
-:se tabstop=2
-:se softtabstop=2
-:se shiftwidth=2
-:se expandtab
-:se hlsearch
-:se number
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set expandtab
+set hlsearch
+set number
 :syntax on
 
+" Allow backspace during insertion mode for delete
+set backspace=2
+
 " Search results not at bottom
-:set scrolloff=10
+set scrolloff=10
 
 " Make vim draw faster
-:se lazyredraw
-:se ttyfast
+set lazyredraw
+set ttyfast
 
 " Fix vim colors
-:set t_Co=256
+set t_Co=256
 
 " Stop Nerdtree from opening as soon as vim starts
 let g:NERDTreeHijackNetrw=0
@@ -32,8 +49,8 @@ let g:NERDTreeHijackNetrw=0
 let &colorcolumn=join(range(81,999),",")
 
 " Add full file path in statusline
-:se statusline+=%F
-:se ls=2
+set statusline+=%F
+set ls=2
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
@@ -42,7 +59,7 @@ if executable('ag')
 endif
 
 " Wheel scrolling
-:set mouse=a
+set mouse=a
 :map <ScrollWheelUp> <C-Y>
 :map <S-ScrollWheelUp> <C-U>
 :map <ScrollWheelDown> <C-E>
@@ -51,3 +68,22 @@ endif
 " Remove trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
 
+" Start neocomplete automatically
+let g:neocomplete#enable_at_startup = 0
+
+" Neocomplete and clang_complete niceness
+if !exists('g:neocomplete#force_omni_input_patterns')
+  let g:neocomplete#force_omni_input_patterns = {}
+endif
+let g:neocomplete#force_overwrite_completefunc = 1
+let g:neocomplete#force_omni_input_patterns.c =
+      \ '[^.[:digit:] *\t]\%(\.\|->\)\w*'
+let g:neocomplete#force_omni_input_patterns.cpp =
+      \ '[^.[:digit:] *\t]\%(\.\|->\)\w*\|\h\w*::\w*'
+let g:neocomplete#force_omni_input_patterns.objc =
+      \ '\[\h\w*\s\h\?\|\h\w*\%(\.\|->\)'
+let g:neocomplete#force_omni_input_patterns.objcpp =
+      \ '\[\h\w*\s\h\?\|\h\w*\%(\.\|->\)\|\h\w*::\w*'
+let g:clang_complete_auto = 0
+let g:clang_auto_select = 0
+"let g:clang_use_library = 1
