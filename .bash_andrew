@@ -1,0 +1,6 @@
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
+if [ -f ~/.venv/bin/activate ]; then
+  source /home/andrew/code/.venv/bin/activate
+fi
