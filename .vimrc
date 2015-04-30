@@ -8,8 +8,8 @@ Bundle 'gmarik/vundle'
 Bundle 'altercation/vim-colors-solarized.git'
 Bundle 'kien/ctrlp.vim.git'
 Bundle 'scrooloose/nerdtree.git'
-#Bundle 'Shougo/neocomplete.vim.git'
-#Bundle 'Rip-Rip/clang_complete.git'
+"Bundle 'Shougo/neocomplete.vim.git'
+"#Bundle 'Rip-Rip/clang_complete.git'
 Bundle 'tpope/vim-fugitive.git'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
