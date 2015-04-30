@@ -8,8 +8,9 @@ Bundle 'gmarik/vundle'
 Bundle 'altercation/vim-colors-solarized.git'
 Bundle 'kien/ctrlp.vim.git'
 Bundle 'scrooloose/nerdtree.git'
-Bundle 'Shougo/neocomplete.vim.git'
-Bundle 'Rip-Rip/clang_complete.git'
+#Bundle 'Shougo/neocomplete.vim.git'
+#Bundle 'Rip-Rip/clang_complete.git'
+Bundle 'tpope/vim-fugitive.git'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -59,6 +60,13 @@ if executable('ag')
 endif
 "" Don't delete cache after exit
 let g:ctrlp_clear_cache_on_exit = 1
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.o
+let g:ctrlp_max_files = 0
 
 " Wheel scrolling
 set mouse=a
@@ -70,6 +78,7 @@ set mouse=a
 " Remove trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
 
+if 0
 " Start neocomplete automatically
 let g:neocomplete#enable_at_startup = 0
 
@@ -89,3 +98,4 @@ let g:neocomplete#force_omni_input_patterns.objcpp =
 let g:clang_complete_auto = 0
 let g:clang_auto_select = 0
 "let g:clang_use_library = 1
+endif
