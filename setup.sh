@@ -12,6 +12,9 @@ if file_exists $SETUP_FLAG ; then
   exit 0
 fi
 
+# setup git
+git submodule init
+
 # setup vimrc
 OLD_VIMRC=$HOMEDIR/.vimrc
 if file_exists $OLD_VIMRC ; then
@@ -33,7 +36,9 @@ if ! dir_exists $VENV ; then
   virtualenv .venv
 fi
 
-echo "source $SETUP_DIR/.bash_andrew" >> ~/.bashrc
+# bashrc changes
+echo "export SETUP_DIR=$SETUP_DIR" >> ~/.bashrc
+echo "source \$SETUP_DIR/.bash_andrew" >> ~/.bashrc
 
 touch $SETUP_FLAG
 
