@@ -1,6 +1,14 @@
 #!/bin/bash -e
 
 source bash_util.sh
+shopt -s expand_aliases
+
+if is_mac ; then
+  if ! command_exists greadlink ; then
+    brew install coreutils
+  fi
+  alias readlink=greadlink
+fi
 
 SETUP_DIR=$(dirname $(readlink -f $0))
 cd $SETUP_DIR
