@@ -99,3 +99,7 @@ let g:clang_complete_auto = 0
 let g:clang_auto_select = 0
 "let g:clang_use_library = 1
 endif
+
+"Map Ctrl-L to escape
+:imap <C-L> <Esc>
+
