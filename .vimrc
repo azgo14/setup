@@ -100,6 +100,5 @@ let g:clang_auto_select = 0
 "let g:clang_use_library = 1
 endif
 
-"Map Ctrl-L to escape
-:imap <C-L> <Esc>
-
+"Map Ctrl-[ to escape
+:imap <C-[> <Esc>
