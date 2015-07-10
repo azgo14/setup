@@ -1,12 +1,6 @@
-[submodule ".vim/bundle/vim-colors-solarized"]
-	path = .vim/bundle/vim-colors-solarized
-	url = https://github.com/altercation/vim-colors-solarized.git
-[submodule ".vim/bundle/ctrlp.vim"]
-	path = .vim/bundle/ctrlp.vim
-	url = https://github.com/kien/ctrlp.vim.git
-[submodule ".vim/bundle/nerdtree"]
-	path = .vim/bundle/nerdtree
-	url = https://github.com/scrooloose/nerdtree.git
 [submodule "lib/git-aware-prompt"]
 	path = lib/git-aware-prompt
 	url = https://github.com/jimeh/git-aware-prompt.git
+[submodule "lib/tmux-config"]
+	path = lib/tmux-config
+	url = https://github.com/tony/tmux-config.git

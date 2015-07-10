@@ -31,6 +31,12 @@ fi
 
 ln -s `readlink -f .vimrc` $HOMEDIR
 
+# Setup tmux
+if file_exists ~/.tmux.conf ; then
+  rm ~/.tmux.conf
+fi
+ln -s $SETUP_DIR/lib/tmux-config/.tmux.conf ~/.tmux.conf
+
 # setup virtualenv
 if ! command_exists virtualenv ; then
   pip install virtualenv

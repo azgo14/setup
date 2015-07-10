@@ -12,6 +12,7 @@ Bundle 'scrooloose/nerdtree.git'
 "#Bundle 'Rip-Rip/clang_complete.git'
 Bundle 'tpope/vim-fugitive.git'
 
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 syntax enable
@@ -99,6 +100,3 @@ let g:clang_complete_auto = 0
 let g:clang_auto_select = 0
 "let g:clang_use_library = 1
 endif
-
-"Map Ctrl-[ to escape
-:imap <C-[> <Esc>
