@@ -21,9 +21,12 @@ if file_exists $SETUP_FLAG ; then
 fi
 
 # setup git
+echo "Setting up git submodules..."
 git submodule init
+git submodule update
 
 # setup vimrc
+echo "Setting up vimrc..."
 OLD_VIMRC=$HOMEDIR/.vimrc
 if file_exists $OLD_VIMRC ; then
   rm $OLD_VIMRC
@@ -32,12 +35,14 @@ fi
 ln -s `readlink -f .vimrc` $HOMEDIR
 
 # Setup tmux
+echo "Setting up tmux configuration..."
 if file_exists ~/.tmux.conf ; then
   rm ~/.tmux.conf
 fi
 ln -s $SETUP_DIR/lib/tmux-config/.tmux.conf ~/.tmux.conf
 
 # setup virtualenv
+echo "Setting up virtualenv..."
 if ! command_exists virtualenv ; then
   pip install virtualenv
 fi
