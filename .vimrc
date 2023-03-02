@@ -5,7 +5,7 @@ call vundle#rc()
 
 " Vim Plugins
 Bundle 'gmarik/vundle'
-Bundle 'altercation/vim-colors-solarized.git'
+Bundle 'morhetz/gruvbox'
 Bundle 'kien/ctrlp.vim.git'
 Bundle 'scrooloose/nerdtree.git'
 "Bundle 'Shougo/neocomplete.vim.git'
@@ -21,8 +21,6 @@ filetype plugin indent on
 set encoding=utf-8 nobomb
 " Show “invisible” characters
 set lcs=tab:?\ ,trail:·,eol:¬,nbsp:_
-set background=dark
-colorscheme solarized
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
@@ -41,8 +39,7 @@ set scrolloff=10
 set lazyredraw
 set ttyfast
 
-" Fix vim colors
-set t_Co=256
+colorscheme gruvbox
 
 " Stop Nerdtree from opening as soon as vim starts
 let g:NERDTreeHijackNetrw=0
