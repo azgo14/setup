@@ -1,5 +1,12 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='/mnt/home/andrew/code/vision/src'
-let g:netrw_dirhist_2='/mnt/home/andrew/code/pinboard'
-let g:netrw_dirhist_3='/mnt/home/andrew/code/vision/src/melon/tools'
+let g:netrw_dirhistcnt =5
+let g:netrw_dirhist_5='/Users/andrewzhai/code/indexit_demo'
+let g:netrw_dirhist_4='/Users/andrewzhai/code/indexit_demo/.github'
+let g:netrw_dirhist_3='/Users/andrewzhai/code/indexit_demo/.git/hooks'
+let g:netrw_dirhist_2='/Users/andrewzhai/code/indexit_demo/.git'
+let g:netrw_dirhist_1='/Users/andrewzhai/code/presidio/.vercel'
+let g:netrw_dirhist_0='/Users/andrewzhai/code/aideate-landing-page/.next'
+let g:netrw_dirhist_9='/Users/andrewzhai/code/T2I-CompBench/BLIPvqa_eval/BLIP'
+let g:netrw_dirhist_8='/Users/andrewzhai/code/envision/requirements'
+let g:netrw_dirhist_7='/Users/andrewzhai/code/terraform'
+let g:netrw_dirhist_6='/Users/andrewzhai/code/terraform/scripts'

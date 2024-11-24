@@ -1,29 +1,34 @@
 {
-    "editor.inlineSuggest.enabled": true,
-    "editor.tabSize": 2,
-    "files.autoSave": "afterDelay",
-    "editor.minimap.enabled": false,
-    "editor.rulers": [80, 120],
-    "terminal.explorerKind": "external",
-    "terminal.external.osxExec": "iTerm.app",
-    "terminal.integrated.allowChords": false,
-
-
-    "python.defaultInterpreterPath": "/usr/local/opt/python/libexec/bin/python",
-    "python.languageServer": "Pylance",
-    "[python]": {
-        "editor.formatOnType": true,
-        "editor.codeActionsOnSave": {
-            "source.organizeImports": true
-        }
-    },
-    "python.linting.enabled": false,
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Args": [
-        // Match what black does.
-        "--max-line-length=88"
-    ],
-    "python.formatting.provider": "black",
-    "python.sortImports.args": ["--profile", "black"]
+  "editor.inlineSuggest.enabled": true,
+  "editor.tabSize": 2,
+  "files.autoSave": "afterDelay",
+  "editor.minimap.enabled": false,
+  "editor.rulers": [80, 120],
+  "terminal.explorerKind": "external",
+  "terminal.external.osxExec": "iTerm.app",
+  "terminal.integrated.allowChords": false,
+  "python.defaultInterpreterPath": "/usr/local/opt/python/libexec/bin/python",
+  "python.languageServer": "Pylance",
+  "[python]": {
+    "editor.formatOnType": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "python.linting.enabled": false,
+  "python.linting.pylintEnabled": false,
+  "python.linting.flake8Enabled": true,
+  "python.linting.flake8Args": [
+    // Match what black does.
+    "--max-line-length=88"
+  ],
+  "python.formatting.provider": "black",
+  "python.sortImports.args": ["--profile", "black"],
+  "workbench.colorTheme": "Default Dark+ Experimental",
+  "python.analysis.stubPath": "proto/gen",
+  "editor.codeActionsOnSave": {},
+  "files.trimTrailingWhitespace": true,
+  "files.trimFinalNewlines": true,
+  "editor.formatOnSave": true,
+  "explorer.confirmDragAndDrop": false
 }
