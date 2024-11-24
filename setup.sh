@@ -43,10 +43,10 @@ ln -s "$SETUP_DIR/lib/tmux-config/.tmux.conf" ~/.tmux.conf
 
 # Setup tmux config
 echo "Setting up tmux config..."
-if file_exists ~/.tmux.config; then
-  rm ~/.tmux.config
+if file_exists ~/.tmux.conf; then
+  rm ~/.tmux.conf
 fi
-ln -s "$SETUP_DIR/.tmux.config" ~/.tmux.config
+ln -s "$SETUP_DIR/.tmux.conf" ~/.tmux.conf
 
 # Setup virtualenv
 echo "Setting up virtualenv..."
