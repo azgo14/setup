@@ -1,7 +1,8 @@
 set nocompatible
 filetype off
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
 " Vim Plugins
 Bundle 'gmarik/vundle'
@@ -12,6 +13,7 @@ Bundle 'scrooloose/nerdtree.git'
 "#Bundle 'Rip-Rip/clang_complete.git'
 Bundle 'tpope/vim-fugitive.git'
 
+call vundle#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
