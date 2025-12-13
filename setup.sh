@@ -204,4 +204,22 @@ else
   echo ".bashrc is already sourced in ~/.bash_profile, skipping..."
 fi
 
+#--------------------------------------------------#
+# Configure ~/.inputrc for readline settings        #
+#--------------------------------------------------#
+echo "Updating ~/.inputrc..."
+INPUTRC="$HOMEDIR/.inputrc"
+if ! grep -q "history-search-backward" "$INPUTRC" 2>/dev/null; then
+  {
+    echo ""
+    echo "# Added by setup script"
+    echo "\"\\e[A\": history-search-backward"
+    echo "\"\\e[B\": history-search-forward"
+    echo "set completion-ignore-case on"
+  } >> "$INPUTRC"
+  echo "Added readline configuration to ~/.inputrc"
+else
+  echo "Readline configuration already present in ~/.inputrc, skipping..."
+fi
+
 echo "Setup complete!"
