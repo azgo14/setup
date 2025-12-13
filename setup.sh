@@ -110,13 +110,6 @@ SETUP_DIR="$(dirname "$(readlink -f "$0")")"
 cd "$SETUP_DIR"
 
 HOMEDIR="$(readlink -f ~)"
-SETUP_FLAG="$HOMEDIR/.setup_done"
-
-# If we've already run this once, skip
-if file_exists "$SETUP_FLAG"; then
-  echo "Setup has already been completed. Exiting."
-  exit 0
-fi
 
 #--------------------------------------------------#
 # Initialize Git submodules if your repo has them   #
@@ -129,11 +122,7 @@ git submodule update
 # Symlink your .vimrc to ~/.vimrc                  #
 #--------------------------------------------------#
 echo "Setting up vimrc..."
-OLD_VIMRC="$HOMEDIR/.vimrc"
-if file_exists "$OLD_VIMRC"; then
-  rm "$OLD_VIMRC"
-fi
-ln -s "${SETUP_DIR}/.vimrc" "$HOMEDIR/.vimrc"
+ln -sf "${SETUP_DIR}/.vimrc" "$HOMEDIR/.vimrc"
 
 #--------------------------------------------------#
 # Install Vundle (Vim plugin manager)              #
@@ -156,10 +145,7 @@ vim +PluginInstall +qall || true
 # Tmux configuration                               #
 #--------------------------------------------------#
 echo "Setting up tmux configuration..."
-if file_exists "$HOMEDIR/.tmux.conf"; then
-  rm "$HOMEDIR/.tmux.conf"
-fi
-ln -s "${SETUP_DIR}/lib/tmux-config/.tmux.conf" "$HOMEDIR/.tmux.conf"
+ln -sf "${SETUP_DIR}/lib/tmux-config/.tmux.conf" "$HOMEDIR/.tmux.conf"
 
 #--------------------------------------------------#
 # Create local Python virtual environment (if none) #
@@ -174,17 +160,48 @@ fi
 # Update user's ~/.bashrc to source your extras     #
 #--------------------------------------------------#
 echo "Updating ~/.bashrc..."
-{
-  echo ""
-  echo "# Added by setup script"
-  echo "export SETUP_DIR=\"$SETUP_DIR\""
-  echo "[[ -f \"\$SETUP_DIR/.bash_andrew\" ]] && source \"\$SETUP_DIR/.bash_andrew\""
-  # If you want to auto-activate the venv, add:
-  # echo "source \"$VENV/bin/activate\""
-} >> "$HOMEDIR/.bashrc"
+BASHRC="$HOMEDIR/.bashrc"
+if ! grep -q "# Added by setup script" "$BASHRC" 2>/dev/null; then
+  {
+    echo ""
+    echo "# Added by setup script"
+    echo "export SETUP_DIR=\"$SETUP_DIR\""
+    echo "[[ -f \"\$SETUP_DIR/.bash_andrew\" ]] && source \"\$SETUP_DIR/.bash_andrew\""
+    echo "[[ -f \"\$SETUP_DIR/git_aliases.sh\" ]] && source \"\$SETUP_DIR/git_aliases.sh\""
+    echo ""
+    echo "# Long history configuration"
+    echo "export HISTSIZE=100000"
+    echo "export HISTFILESIZE=200000"
+    echo "export HISTCONTROL=ignoreboth:erasedups"
+    echo "export HISTIGNORE=\"ls:cd:cd -:pwd:exit:date:* --help\""
+    echo "export HISTTIMEFORMAT=\"%F %T  \""
+    echo "shopt -s histappend"
+    echo "shopt -s cmdhist"
+    echo "export PROMPT_COMMAND=\"history -a; history -c; history -r; \${PROMPT_COMMAND}\""
+    # If you want to auto-activate the venv, add:
+    # echo "source \"$VENV/bin/activate\""
+  } >> "$BASHRC"
+  echo "Added setup configuration to ~/.bashrc"
+else
+  echo "Setup configuration already present in ~/.bashrc, skipping..."
+fi
 
 #--------------------------------------------------#
-# Create the setup flag file; final message         #
+# Ensure ~/.bash_profile sources ~/.bashrc          #
+# (for login shells on macOS, etc.)                 #
 #--------------------------------------------------#
-touch "$SETUP_FLAG"
+echo "Updating ~/.bash_profile..."
+BASH_PROFILE="$HOMEDIR/.bash_profile"
+if ! grep -q "source.*\.bashrc" "$BASH_PROFILE" 2>/dev/null && \
+   ! grep -q "\. .*\.bashrc" "$BASH_PROFILE" 2>/dev/null; then
+  {
+    echo ""
+    echo "# Source .bashrc for login shells (added by setup script)"
+    echo "[[ -f \"\$HOME/.bashrc\" ]] && source \"\$HOME/.bashrc\""
+  } >> "$BASH_PROFILE"
+  echo "Added .bashrc sourcing to ~/.bash_profile"
+else
+  echo ".bashrc is already sourced in ~/.bash_profile, skipping..."
+fi
+
 echo "Setup complete!"
