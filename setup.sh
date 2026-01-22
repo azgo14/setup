@@ -104,6 +104,20 @@ if ! command_exists virtualenv; then
 fi
 
 #--------------------------------------------------#
+# s5cmd (fast S3 client)                            #
+#--------------------------------------------------#
+if ! command_exists s5cmd; then
+  install_package s5cmd
+fi
+
+#--------------------------------------------------#
+# duckdb (analytical SQL database)                  #
+#--------------------------------------------------#
+if ! command_exists duckdb; then
+  install_package duckdb
+fi
+
+#--------------------------------------------------#
 # Start the main setup actions                      #
 #--------------------------------------------------#
 SETUP_DIR="$(dirname "$(readlink -f "$0")")"
@@ -168,6 +182,7 @@ if ! grep -q "# Added by setup script" "$BASHRC" 2>/dev/null; then
     echo "export SETUP_DIR=\"$SETUP_DIR\""
     echo "[[ -f \"\$SETUP_DIR/.bash_andrew\" ]] && source \"\$SETUP_DIR/.bash_andrew\""
     echo "[[ -f \"\$SETUP_DIR/git_aliases.sh\" ]] && source \"\$SETUP_DIR/git_aliases.sh\""
+    echo "[[ -f \"\$SETUP_DIR/.tools\" ]] && source \"\$SETUP_DIR/.tools\""
     echo ""
     echo "# Long history configuration"
     echo "export HISTSIZE=100000"

@@ -1,0 +1,75 @@
+# s5cmd aliases - fast S3 client
+alias s5='s5cmd'
+
+# duckdb aliases - analytical SQL database
+alias ddb='duckdb'
+
+livefreq() {
+  # Usage: your_cmd | livefreq [interval_seconds]
+  # Requires: gawk
+  gawk -v INTERVAL="${1:-1}" '
+  BEGIN {
+    first = 1
+    last = systime()
+    last_lines = 0
+
+    cols = (ENVIRON["COLUMNS"] + 0 ? ENVIRON["COLUMNS"] + 0 : 120)
+    # width budget for: count(15) + space + percent(8) + two spaces = 26
+    valw = cols - 26
+    if (valw < 20) valw = 20
+  }
+
+  function commify(n, s, sign, out) {
+    # robust comma formatting using strings (portable)
+    s = sprintf("%.0f", n)
+    sign = ""
+    if (substr(s, 1, 1) == "-") { sign = "-"; s = substr(s, 2) }
+    out = ""
+    while (length(s) > 3) {
+      out = "," substr(s, length(s) - 2) out
+      s = substr(s, 1, length(s) - 3)
+    }
+    return sign s out
+  }
+
+  function clip(s, w) {
+    gsub(/\t/, "\\t", s)
+    gsub(/\r/, "", s)
+    if (length(s) <= w) return s
+    return substr(s, 1, w - 1) "…"
+  }
+
+  function by_count_desc(i1, v1, i2, v2) {
+    if (v1 != v2) return (v1 > v2 ? -1 : 1)
+    # stable-ish tie-breaker
+    return (i1 < i2 ? -1 : (i1 > i2))
+  }
+
+  function draw(    n, i, k, pct) {
+    if (!first && last_lines > 0) printf "\033[%dA", last_lines
+    first = 0
+
+    printf "\033[J"
+    printf "%15s %8s  %s\n", "count", "percent", "value"
+
+    n = asorti(c, keys, "by_count_desc")
+    for (i = 1; i <= n; i++) {
+      k = keys[i]
+      pct = (total ? 100 * c[k] / total : 0)
+      printf "%15s %7.2f%%  %s\n", commify(c[k]), pct, clip(k, valw)
+    }
+
+    last_lines = 1 + n
+  }
+
+  {
+    c[$0]++
+    total++
+
+    now = systime()
+    if (now - last >= INTERVAL) { draw(); last = now }
+  }
+
+  END { draw(); printf "\n" }
+  '
+}

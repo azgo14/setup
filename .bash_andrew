@@ -3,6 +3,7 @@ export EDITOR="$VISUAL"
 
 if [ -f ~/.venv/bin/activate ]; then
   echo "Initializing virtual env..."
+  # shellcheck source=/dev/null
   source ~/.venv/bin/activate
 fi
 
@@ -17,7 +18,8 @@ export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 # Force Color Prompt (with git)
 export GITAWAREPROMPT=$SETUP_DIR/lib/git-aware-prompt
-source $GITAWAREPROMPT/main.sh
+# shellcheck source=/dev/null
+source "$GITAWAREPROMPT/main.sh"
 
 export PS1="\${debian_chroot:+(\$debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] \[$txtcyn\]\$git_branch\[$txtred\]\$git_dirty\[$txtrst\]\$ "
 
@@ -27,3 +29,9 @@ git config --global alias.br branch
 git config --global alias.ci commit
 git config --global alias.st status
 git config --global alias.last 'log -1 HEAD'
+
+# Load custom tools/functions if available
+if [ -n "${SETUP_DIR:-}" ] && [ -f "$SETUP_DIR/.tools" ]; then
+  # shellcheck source=/dev/null
+  source "$SETUP_DIR/.tools"
+fi
