@@ -159,7 +159,7 @@ vim +PluginInstall +qall || true
 # Tmux configuration                               #
 #--------------------------------------------------#
 echo "Setting up tmux configuration..."
-ln -sf "${SETUP_DIR}/lib/tmux-config/.tmux.conf" "$HOMEDIR/.tmux.conf"
+ln -sf "${SETUP_DIR}/.tmux.conf" "$HOMEDIR/.tmux.conf"
 
 #--------------------------------------------------#
 # Create local Python virtual environment (if none) #
