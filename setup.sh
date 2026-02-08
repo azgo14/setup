@@ -2,31 +2,81 @@
 set -euo pipefail
 
 #--------------------------------------------------#
+# Parse arguments                                   #
+#--------------------------------------------------#
+NO_SUDO=false
+for arg in "$@"; do
+  case "$arg" in
+    --no-sudo) NO_SUDO=true ;;
+    --help|-h)
+      echo "Usage: ./setup.sh [--no-sudo]"
+      echo ""
+      echo "Options:"
+      echo "  --no-sudo  Skip package installation (no sudo required)."
+      echo "             Only sets up dotfiles, symlinks, and configs."
+      echo "             Missing dependencies will be reported as warnings."
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $arg (try --help)"
+      exit 1
+      ;;
+  esac
+done
+
+#--------------------------------------------------#
 # Sourcing your existing utility functions, etc.    #
 #--------------------------------------------------#
 source bash_util.sh
 shopt -s expand_aliases
 
 #--------------------------------------------------#
+# Helper: warn about missing command in no-sudo mode#
+#--------------------------------------------------#
+MISSING_DEPS=()
+require_command() {
+  local cmd="$1"
+  if ! command_exists "$cmd"; then
+    if $NO_SUDO; then
+      echo "[WARN] '$cmd' not found — skipping install (--no-sudo mode)"
+      MISSING_DEPS+=("$cmd")
+    else
+      return 1
+    fi
+  fi
+  return 0
+}
+
+#--------------------------------------------------#
 # macOS vs. Linux "readlink" / "coreutils" handling #
 #--------------------------------------------------#
 if is_mac; then
   if ! command_exists greadlink; then
-    echo "Installing coreutils (for greadlink)..."
-    brew install coreutils
+    if $NO_SUDO; then
+      echo "[WARN] 'greadlink' not found — skipping install (--no-sudo mode)"
+      MISSING_DEPS+=("coreutils")
+    else
+      echo "Installing coreutils (for greadlink)..."
+      brew install coreutils
+    fi
   fi
   alias readlink=greadlink
 else
   if ! command_exists readlink; then
-    echo "Installing coreutils..."
-    if command_exists apt-get; then
-      sudo apt-get update
-      sudo apt-get install -y coreutils
-    elif command_exists yum; then
-      sudo yum install -y coreutils
+    if $NO_SUDO; then
+      echo "[WARN] 'readlink' not found — skipping install (--no-sudo mode)"
+      MISSING_DEPS+=("coreutils")
     else
-      echo "No recognized package manager found to install coreutils. Please install manually."
-      exit 1
+      echo "Installing coreutils..."
+      if command_exists apt-get; then
+        sudo apt-get update
+        sudo apt-get install -y coreutils
+      elif command_exists yum; then
+        sudo yum install -y coreutils
+      else
+        echo "No recognized package manager found to install coreutils. Please install manually."
+        exit 1
+      fi
     fi
   fi
 fi
@@ -36,6 +86,11 @@ fi
 #--------------------------------------------------#
 install_package() {
   local pkg="$1"
+  if $NO_SUDO; then
+    echo "[WARN] '$pkg' not found — skipping install (--no-sudo mode)"
+    MISSING_DEPS+=("$pkg")
+    return 0
+  fi
   if is_mac; then
     if ! command_exists brew; then
       echo "Homebrew not found. Installing now..."
@@ -72,7 +127,10 @@ fi
 
 # 3. Virtualenv (handle macOS vs. Linux carefully to avoid PEP 668 errors)
 if ! command_exists virtualenv; then
-  if is_mac; then
+  if $NO_SUDO; then
+    echo "[WARN] 'virtualenv' not found — skipping install (--no-sudo mode)"
+    MISSING_DEPS+=("virtualenv")
+  elif is_mac; then
     # Prefer brew or pipx for virtualenv on macOS
     if ! command_exists pipx; then
       echo "Installing pipx..."
@@ -128,9 +186,13 @@ HOMEDIR="$(readlink -f ~)"
 #--------------------------------------------------#
 # Initialize Git submodules if your repo has them   #
 #--------------------------------------------------#
-echo "Initializing git submodules..."
-git submodule init
-git submodule update
+if command_exists git; then
+  echo "Initializing git submodules..."
+  git submodule init
+  git submodule update
+else
+  echo "[WARN] git not available — skipping submodule init"
+fi
 
 #--------------------------------------------------#
 # Symlink your .vimrc to ~/.vimrc                  #
@@ -141,19 +203,23 @@ ln -sf "${SETUP_DIR}/.vimrc" "$HOMEDIR/.vimrc"
 #--------------------------------------------------#
 # Install Vundle (Vim plugin manager)              #
 #--------------------------------------------------#
-echo "Installing Vundle..."
-# The official Vundle installation path is ~/.vim/bundle/Vundle.vim
-VUNDLE_DIR="$HOMEDIR/.vim/bundle/Vundle.vim"
-if ! dir_exists "$VUNDLE_DIR"; then
-  echo "Cloning VundleVim/Vundle.vim repository..."
-  git clone https://github.com/VundleVim/Vundle.vim.git "$VUNDLE_DIR"
-else
-  echo "Vundle is already installed at $VUNDLE_DIR"
-fi
+if command_exists git && command_exists vim; then
+  echo "Installing Vundle..."
+  # The official Vundle installation path is ~/.vim/bundle/Vundle.vim
+  VUNDLE_DIR="$HOMEDIR/.vim/bundle/Vundle.vim"
+  if ! dir_exists "$VUNDLE_DIR"; then
+    echo "Cloning VundleVim/Vundle.vim repository..."
+    git clone https://github.com/VundleVim/Vundle.vim.git "$VUNDLE_DIR"
+  else
+    echo "Vundle is already installed at $VUNDLE_DIR"
+  fi
 
-# Optionally, run plugin install to automatically fetch all plugins declared in .vimrc:
-echo "Installing Vim plugins via Vundle..."
-vim +PluginInstall +qall || true
+  # Optionally, run plugin install to automatically fetch all plugins declared in .vimrc:
+  echo "Installing Vim plugins via Vundle..."
+  vim +PluginInstall +qall || true
+else
+  echo "[WARN] git or vim not available — skipping Vundle setup"
+fi
 
 #--------------------------------------------------#
 # Tmux configuration                               #
@@ -167,7 +233,11 @@ ln -sf "${SETUP_DIR}/.tmux.conf" "$HOMEDIR/.tmux.conf"
 VENV="$HOMEDIR/.venv"
 echo "Setting up user's virtualenv at $VENV..."
 if ! dir_exists "$VENV"; then
-  python3 -m venv "$VENV"
+  if command_exists python3; then
+    python3 -m venv "$VENV"
+  else
+    echo "[WARN] python3 not available — skipping venv creation"
+  fi
 fi
 
 #--------------------------------------------------#
@@ -237,4 +307,18 @@ else
   echo "Readline configuration already present in ~/.inputrc, skipping..."
 fi
 
-echo "Setup complete!"
+#--------------------------------------------------#
+# Summary                                          #
+#--------------------------------------------------#
+if [ ${#MISSING_DEPS[@]} -gt 0 ]; then
+  echo ""
+  echo "================================================"
+  echo "Setup complete (--no-sudo mode)."
+  echo "The following dependencies are missing and were"
+  echo "skipped. Install them manually when possible:"
+  echo ""
+  printf "  - %s\n" "${MISSING_DEPS[@]}"
+  echo "================================================"
+else
+  echo "Setup complete!"
+fi
