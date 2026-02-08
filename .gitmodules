@@ -1,6 +1,3 @@
 [submodule "lib/git-aware-prompt"]
 	path = lib/git-aware-prompt
 	url = https://github.com/jimeh/git-aware-prompt.git
-[submodule "lib/tmux-config"]
-	path = lib/tmux-config
-	url = https://github.com/tony/tmux-config.git
