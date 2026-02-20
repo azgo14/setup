@@ -50,7 +50,7 @@ pq() {
   else
     sql="COPY (SELECT * FROM read_parquet('${path}')) TO '/dev/stdout' (FORMAT JSON, ARRAY false);"
   fi
-  duckdb -c "$sql"
+  duckdb -c "$sql" 2>/dev/null
 }
 
 livefreq() {
