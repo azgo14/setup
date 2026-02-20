@@ -4,6 +4,55 @@ alias s5='s5cmd'
 # duckdb aliases - analytical SQL database
 alias ddb='duckdb'
 
+pq() {
+  # Read Parquet files and output newline-delimited JSON, pipeable into jq.
+  #
+  # Usage:
+  #   pq <path>                          # dump all rows
+  #   pq <path> 10                       # first 10 rows
+  #   pq <path> | jq '.col_name'         # pipe to jq
+  #   pq <path> -q "SELECT * FROM data WHERE x > 5"  # custom SQL
+  #
+  # <path> can be local, s3://, or a glob (e.g. s3://bucket/prefix/*.parquet)
+
+  if [ $# -lt 1 ]; then
+    echo "Usage: pq <parquet_path> [limit] [-q <sql>]" >&2
+    echo "  parquet_path  Local path or s3:// URI (globs supported)" >&2
+    echo "  limit         Max rows to return (default: all)" >&2
+    echo "  -q <sql>      Custom SQL query (use 'data' as the table name)" >&2
+    return 1
+  fi
+
+  local path="$1"
+  shift
+
+  local limit=""
+  local query=""
+
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      -q|--query)
+        query="$2"
+        shift 2
+        ;;
+      *)
+        limit="$1"
+        shift
+        ;;
+    esac
+  done
+
+  local sql
+  if [ -n "$query" ]; then
+    sql="CREATE OR REPLACE VIEW data AS SELECT * FROM read_parquet('${path}'); COPY (${query}) TO '/dev/stdout' (FORMAT JSON, ARRAY false);"
+  elif [ -n "$limit" ]; then
+    sql="COPY (SELECT * FROM read_parquet('${path}') LIMIT ${limit}) TO '/dev/stdout' (FORMAT JSON, ARRAY false);"
+  else
+    sql="COPY (SELECT * FROM read_parquet('${path}')) TO '/dev/stdout' (FORMAT JSON, ARRAY false);"
+  fi
+  duckdb -c "$sql"
+}
+
 livefreq() {
   # Usage: your_cmd | livefreq [interval_seconds]
   # Requires: gawk
